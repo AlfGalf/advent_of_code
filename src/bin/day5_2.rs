@@ -1,5 +1,9 @@
 use regex::Regex;
 use std::{fs, error::Error, usize, collections::HashMap};
+<<<<<<< HEAD
+=======
+use rayon::prelude::*;
+>>>>>>> 29705fd (Day 5)
 
 fn lookup(dict: &Vec<(usize, usize, usize)>, val: usize) -> usize {
     for (dest, source, range) in dict {
@@ -42,8 +46,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     let temp_to_hum = &dicts["temperature-to-humidity"];
     let hum_to_loc = &dicts["humidity-to-location"];
 
-    let val = seeds.iter().flat_map(|(start, range)| {
-        (*start..start + range).map(|s| {
+    let val = seeds.par_iter().map(|(start, range)| {
+        (*start..start + range).into_par_iter().map(|s| {
             let soil = lookup(seeds_to_soil, s);
             let fertilizer = lookup(soil_to_fert, soil);
             let water= lookup(fert_to_water, fertilizer);
@@ -52,7 +56,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             let humidity = lookup(temp_to_hum, temp);
             let location= lookup(hum_to_loc, humidity);
             location
-        })
+        }).min().unwrap()
     }).min().unwrap();
 
     println!("{val}");
