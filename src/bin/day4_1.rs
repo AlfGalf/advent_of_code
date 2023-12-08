@@ -3,7 +3,7 @@ use std::{fs, error::Error, usize};
 
 fn main() -> Result<(), Box<dyn Error>> {
     let contents = fs::read_to_string("inputs/day4.txt")?;
-    let mut lines = contents.lines();
+    let lines = contents.lines();
 
     let card_regex = Regex::new(r"Card[ \d]+:([\d ]+)\|([\d ]+)").unwrap();
     let num_regex = Regex::new(r"\d+").unwrap();

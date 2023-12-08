@@ -1,5 +1,5 @@
 use regex::Regex;
-use std::{fs, error::Error, usize, collections::HashMap};
+use std::{fs, error::Error, collections::HashMap};
 
 fn main() -> Result<(), Box<dyn Error>> {
     let binding = fs::read_to_string("inputs/day8.txt")?;

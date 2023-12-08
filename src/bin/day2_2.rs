@@ -10,7 +10,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         println!("{l}");
 
         let game_content = regex_game_and_content.captures(l).unwrap();
-        let (num, game_content) = (game_content.get(1).unwrap().as_str().parse::<usize>().unwrap(), game_content.get(2).unwrap().as_str());
+        let (_, game_content) = (game_content.get(1).unwrap().as_str().parse::<usize>().unwrap(), game_content.get(2).unwrap().as_str());
 
         let game_parts = game_content.split(";");
 

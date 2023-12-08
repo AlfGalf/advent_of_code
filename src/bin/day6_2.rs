@@ -1,15 +1,5 @@
 use regex::Regex;
-use std::{fs, error::Error, usize, collections::HashMap, mem::Discriminant};
-use rayon::prelude::*;
-
-fn lookup(dict: &Vec<(usize, usize, usize)>, val: usize) -> usize {
-    for (dest, source, range) in dict {
-        if source <= &val && val < source + range {
-            return dest + (val - source);
-        }
-    }
-    val
-}
+use std::{fs, error::Error, usize};
 
 fn main() -> Result<(), Box<dyn Error>> {
     let binding = fs::read_to_string("inputs/day6.txt")?;
