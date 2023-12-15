@@ -16,10 +16,10 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let mut boxes: [Vec<(&str, usize)>; 256] = arr![Default::default(); 256];
 
-    let putReg = Regex::new(r"(\w+)=(\d+)").unwrap();
-    let popReg = Regex::new(r"(\w+)-").unwrap();
+    let put_reg = Regex::new(r"(\w+)=(\d+)").unwrap();
+    let pop_reg = Regex::new(r"(\w+)-").unwrap();
     for s in inputs {
-        if let Some((n, d)) = putReg.captures(s).map(|c| {
+        if let Some((n, d)) = put_reg.captures(s).map(|c| {
             (
                 c.get(1).unwrap().as_str(),
                 c.get(2).unwrap().as_str().parse::<usize>().unwrap(),
@@ -32,7 +32,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             else {
                 t_box.push((n, d));
             }
-        } else if let Some(n) = popReg.captures(s).map(|c| {
+        } else if let Some(n) = pop_reg.captures(s).map(|c| {
             c.get(1).unwrap().as_str()
         }) {
             boxes[hash(n) as usize] = boxes[hash(n) as usize]

@@ -1,4 +1,4 @@
-use std::{fs, error::Error, collections::{VecDeque, HashMap, HashSet}, usize};
+use std::{fs, error::Error, collections::{HashMap, HashSet}, usize};
 
 // Advances to the next ?
 fn advance(chars: &[char], nums: &[usize], cur: (usize, usize)) -> Option<(usize, usize)> {

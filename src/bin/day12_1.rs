@@ -1,10 +1,9 @@
-use std::{fs, error::Error, collections::VecDeque};
+use std::{fs, error::Error};
 
 fn check(guess: &str, nums: &Vec<usize>) -> Option<bool> {
     let total = nums.iter().sum();
     let cur_yes = guess.chars().filter(|c| c == &'#').count();
     let cur_q = guess.chars().filter(|c| c == &'?').count();
-    let cur_no = guess.chars().filter(|c| c == &'.').count();
 
     if cur_yes > total || cur_q + cur_yes < total { return Some(false); }
 
