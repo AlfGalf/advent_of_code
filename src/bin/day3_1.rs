@@ -1,5 +1,5 @@
 use regex::Regex;
-use std::{fs, error::Error, usize};
+use std::{error::Error, fs, usize};
 
 fn main() -> Result<(), Box<dyn Error>> {
     let contents = fs::read_to_string("inputs/day3.txt")?;
@@ -9,7 +9,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut current_line: Option<&str> = lines.next();
     let mut next_line: Option<&str> = lines.next();
 
-    let mut result= 0;
+    let mut result = 0;
     let num_regex = Regex::new(r"\d+").unwrap();
     let symbol_regex = Regex::new(r"[^\d\.]").unwrap();
     while let Some(cur_line) = current_line {

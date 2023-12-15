@@ -1,5 +1,5 @@
 use regex::Regex;
-use std::{fs, error::Error, usize, collections::HashMap};
+use std::{collections::HashMap, error::Error, fs, usize};
 
 fn map(c1: char) -> usize {
     match c1 {
@@ -25,35 +25,47 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let card = Regex::new(r"(?m)([AKQJT2-9]{5}) (\d+)").unwrap();
 
-    let cards: Vec<(String, usize)> = card.captures_iter(&binding).map( |c| {
-        (c.get(1).unwrap().as_str().to_string(), c.get(2).unwrap().as_str().parse().unwrap())
-    } ).collect();
+    let cards: Vec<(String, usize)> = card
+        .captures_iter(&binding)
+        .map(|c| {
+            (
+                c.get(1).unwrap().as_str().to_string(),
+                c.get(2).unwrap().as_str().parse().unwrap(),
+            )
+        })
+        .collect();
 
-    let mut vals = cards.iter().map(|(c, v)| {
-        let mut cards: HashMap<char, usize> = c.chars().fold(HashMap::new(),|mut hm, c| {hm.entry(c).and_modify(|v| *v+=1).or_insert(1); hm});
+    let mut vals = cards
+        .iter()
+        .map(|(c, v)| {
+            let mut cards: HashMap<char, usize> = c.chars().fold(HashMap::new(), |mut hm, c| {
+                hm.entry(c).and_modify(|v| *v += 1).or_insert(1);
+                hm
+            });
 
-        let num_j = *cards.get(&'J').unwrap_or(&0);
-        cards.insert('J', 0);
+            let num_j = *cards.get(&'J').unwrap_or(&0);
+            cards.insert('J', 0);
 
-        let most = cards.iter().max_by(|l, r| l.1.cmp(r.1)).unwrap();
-        let most = (*most.0, *most.1 + num_j);
+            let most = cards.iter().max_by(|l, r| l.1.cmp(r.1)).unwrap();
+            let most = (*most.0, *most.1 + num_j);
 
-        cards.insert(most.0, 0);
+            cards.insert(most.0, 0);
 
-        let second_most = cards.iter().max_by(|l, r| l.1.cmp(r.1)).unwrap().clone();
+            let second_most = cards.iter().max_by(|l, r| l.1.cmp(r.1)).unwrap().clone();
 
-        let second_most = (*second_most.0, *second_most.1);
+            let second_most = (*second_most.0, *second_most.1);
 
-        (c.clone(), most, second_most, *v)
-    }).collect::<Vec<_>>();
+            (c.clone(), most, second_most, *v)
+        })
+        .collect::<Vec<_>>();
 
     println!("{:?}", vals);
     vals.sort_by(|c1, c2| {
-        if c1.1.1 != c2.1.1 {
-            return c1.1.1.cmp(&c2.1.1);
+        if c1.1 .1 != c2.1 .1 {
+            return c1.1 .1.cmp(&c2.1 .1);
         };
-        if c1.2.1 != c2.2.1 {
-            return c1.2.1.cmp(&c2.2.1);
+        if c1.2 .1 != c2.2 .1 {
+            return c1.2 .1.cmp(&c2.2 .1);
         }
         for i in 0..5 {
             let l_char = c1.0.chars().nth(i).unwrap();
@@ -66,10 +78,14 @@ fn main() -> Result<(), Box<dyn Error>> {
     });
     // println!("{:?}", vals);
 
-    let val: usize = vals.iter().enumerate().map(|(r, c)| {
-        println!("{} {} {}", c.0, c.3, r + 1);
-        c.3 * (r + 1)
-    }).sum();
+    let val: usize = vals
+        .iter()
+        .enumerate()
+        .map(|(r, c)| {
+            println!("{} {} {}", c.0, c.3, r + 1);
+            c.3 * (r + 1)
+        })
+        .sum();
 
     println!("{val}");
 

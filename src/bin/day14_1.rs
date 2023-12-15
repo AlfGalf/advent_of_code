@@ -1,13 +1,17 @@
 use std::{
-    collections::{HashSet, HashMap},
+    cmp::Ordering,
+    collections::{HashMap, HashSet},
     error::Error,
-    fs, cmp::Ordering,
+    fs,
 };
 
 use itertools::Itertools;
 
 enum Dir {
-    N, S, E, W
+    N,
+    S,
+    E,
+    W,
 }
 
 impl Dir {
@@ -20,12 +24,41 @@ impl Dir {
         }
     }
 
-    fn increment(&self, (x, y): (usize, usize), height: usize, width: usize) -> Option<(usize, usize)> {
+    fn increment(
+        &self,
+        (x, y): (usize, usize),
+        height: usize,
+        width: usize,
+    ) -> Option<(usize, usize)> {
         match self {
-            Dir::N => if y != 0 {Some((x, y-1))} else {None},
-            Dir::S => if y != height - 1 {Some((x, y+1))} else {None},
-            Dir::W => if x != 0 {Some((x-1, y))} else {None},
-            Dir::E => if x != width - 1 {Some((x+1, y))} else {None},
+            Dir::N => {
+                if y != 0 {
+                    Some((x, y - 1))
+                } else {
+                    None
+                }
+            }
+            Dir::S => {
+                if y != height - 1 {
+                    Some((x, y + 1))
+                } else {
+                    None
+                }
+            }
+            Dir::W => {
+                if x != 0 {
+                    Some((x - 1, y))
+                } else {
+                    None
+                }
+            }
+            Dir::E => {
+                if x != width - 1 {
+                    Some((x + 1, y))
+                } else {
+                    None
+                }
+            }
         }
     }
 }
@@ -42,7 +75,9 @@ fn next(map: &Vec<Vec<char>>, rounds: &Vec<(usize, usize)>, dir: Dir) -> Vec<(us
 
         loop {
             if let Some(next) = dir.increment(p, height, width) {
-                if map[next.1][next.0] == '#' || new_rounds.contains(&next) {break;}
+                if map[next.1][next.0] == '#' || new_rounds.contains(&next) {
+                    break;
+                }
                 p = next;
             } else {
                 break;
@@ -117,17 +152,28 @@ fn main() -> Result<(), Box<dyn Error>> {
     // }
 
     for y in 0..inputs.len() {
-        for x in 0..inputs[0].len()  {
-            print!("{}", if rounds.contains(&(x, y)) {
-                'O'
-            } else { map[y][x] } )
+        for x in 0..inputs[0].len() {
+            print!(
+                "{}",
+                if rounds.contains(&(x, y)) {
+                    'O'
+                } else {
+                    map[y][x]
+                }
+            )
         }
         println!();
     }
 
-    let res: usize = (0..inputs.len()).zip((1..inputs.len() + 1).rev()).map(|(y, p)| {
-        (0..inputs[0].len()).filter(|&x| rounds.contains(&(x, y))).count() * (p)
-    }).sum();
+    let res: usize = (0..inputs.len())
+        .zip((1..inputs.len() + 1).rev())
+        .map(|(y, p)| {
+            (0..inputs[0].len())
+                .filter(|&x| rounds.contains(&(x, y)))
+                .count()
+                * (p)
+        })
+        .sum();
 
     println!("{res}");
 

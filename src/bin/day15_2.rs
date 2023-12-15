@@ -28,13 +28,10 @@ fn main() -> Result<(), Box<dyn Error>> {
             let t_box = &mut boxes[hash(n) as usize];
             if let Some(b) = t_box.iter_mut().filter(|(tn, _)| &n == tn).next() {
                 b.1 = d
-            }
-            else {
+            } else {
                 t_box.push((n, d));
             }
-        } else if let Some(n) = pop_reg.captures(s).map(|c| {
-            c.get(1).unwrap().as_str()
-        }) {
+        } else if let Some(n) = pop_reg.captures(s).map(|c| c.get(1).unwrap().as_str()) {
             boxes[hash(n) as usize] = boxes[hash(n) as usize]
                 .iter()
                 .map(|c| c.clone())
@@ -56,7 +53,11 @@ fn main() -> Result<(), Box<dyn Error>> {
     let res: usize = boxes
         .into_iter()
         .enumerate()
-        .flat_map(|(nb, b)| b.into_iter().enumerate().map(move |(i, (_, d))| (nb + 1) * (i + 1) * d))
+        .flat_map(|(nb, b)| {
+            b.into_iter()
+                .enumerate()
+                .map(move |(i, (_, d))| (nb + 1) * (i + 1) * d)
+        })
         .sum();
 
     println!("{res}");

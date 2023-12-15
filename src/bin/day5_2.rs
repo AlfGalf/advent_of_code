@@ -1,9 +1,6 @@
-use regex::Regex;
-use std::{fs, error::Error, usize, collections::HashMap};
-<<<<<<< HEAD
-=======
 use rayon::prelude::*;
->>>>>>> 29705fd (Day 5)
+use regex::Regex;
+use std::{collections::HashMap, error::Error, fs, usize};
 
 fn lookup(dict: &Vec<(usize, usize, usize)>, val: usize) -> usize {
     for (dest, source, range) in dict {
@@ -24,17 +21,40 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let seed_regex = Regex::new(r"(\d+) (\d+)").unwrap();
 
-    let seeds = seeds_regex.captures(&contents).unwrap().get(1).unwrap().as_str();
-    let seeds: Vec<(usize, usize)> = seed_regex.captures_iter(seeds).map(|c| (c.get(1).unwrap().as_str().parse().unwrap(), c.get(2).unwrap().as_str().parse().unwrap())).collect();
+    let seeds = seeds_regex
+        .captures(&contents)
+        .unwrap()
+        .get(1)
+        .unwrap()
+        .as_str();
+    let seeds: Vec<(usize, usize)> = seed_regex
+        .captures_iter(seeds)
+        .map(|c| {
+            (
+                c.get(1).unwrap().as_str().parse().unwrap(),
+                c.get(2).unwrap().as_str().parse().unwrap(),
+            )
+        })
+        .collect();
 
-    let dicts: HashMap<String, Vec<(usize, usize, usize)>> = dict_regex.captures_iter(&contents).map(|c| {
-        let name = c.get(1).unwrap().as_str().to_string();
-        let entries = c.get(2).unwrap().as_str();
-        let entries = entry_regex.captures_iter(entries).map(|c|
-            (c.get(1).unwrap().as_str().parse().unwrap(), c.get(2).unwrap().as_str().parse().unwrap(), c.get(3).unwrap().as_str().parse().unwrap())
-        ).collect();
-        (name, entries)
-    }).collect();
+    let dicts: HashMap<String, Vec<(usize, usize, usize)>> = dict_regex
+        .captures_iter(&contents)
+        .map(|c| {
+            let name = c.get(1).unwrap().as_str().to_string();
+            let entries = c.get(2).unwrap().as_str();
+            let entries = entry_regex
+                .captures_iter(entries)
+                .map(|c| {
+                    (
+                        c.get(1).unwrap().as_str().parse().unwrap(),
+                        c.get(2).unwrap().as_str().parse().unwrap(),
+                        c.get(3).unwrap().as_str().parse().unwrap(),
+                    )
+                })
+                .collect();
+            (name, entries)
+        })
+        .collect();
 
     // println!("{:?}", seeds);
     // println!("{:?}", dicts);
@@ -46,18 +66,26 @@ fn main() -> Result<(), Box<dyn Error>> {
     let temp_to_hum = &dicts["temperature-to-humidity"];
     let hum_to_loc = &dicts["humidity-to-location"];
 
-    let val = seeds.par_iter().map(|(start, range)| {
-        (*start..start + range).into_par_iter().map(|s| {
-            let soil = lookup(seeds_to_soil, s);
-            let fertilizer = lookup(soil_to_fert, soil);
-            let water= lookup(fert_to_water, fertilizer);
-            let light = lookup(water_to_light, water);
-            let temp = lookup(light_to_temp, light);
-            let humidity = lookup(temp_to_hum, temp);
-            let location= lookup(hum_to_loc, humidity);
-            location
-        }).min().unwrap()
-    }).min().unwrap();
+    let val = seeds
+        .par_iter()
+        .map(|(start, range)| {
+            (*start..start + range)
+                .into_par_iter()
+                .map(|s| {
+                    let soil = lookup(seeds_to_soil, s);
+                    let fertilizer = lookup(soil_to_fert, soil);
+                    let water = lookup(fert_to_water, fertilizer);
+                    let light = lookup(water_to_light, water);
+                    let temp = lookup(light_to_temp, light);
+                    let humidity = lookup(temp_to_hum, temp);
+                    let location = lookup(hum_to_loc, humidity);
+                    location
+                })
+                .min()
+                .unwrap()
+        })
+        .min()
+        .unwrap();
 
     println!("{val}");
 

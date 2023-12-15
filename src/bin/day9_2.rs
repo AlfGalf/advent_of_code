@@ -1,33 +1,51 @@
 use regex::Regex;
-use std::{fs, error::Error};
+use std::{error::Error, fs};
 
 fn main() -> Result<(), Box<dyn Error>> {
     let binding = fs::read_to_string("inputs/day9.txt")?;
 
-    let instructions= Regex::new(r"-?\d+").unwrap();
+    let instructions = Regex::new(r"-?\d+").unwrap();
 
-    let instructions: Vec<Vec<isize>> = binding.lines().map(|l| instructions.captures_iter(l)
-        .map(|c| c.get(0).unwrap().as_str().parse().unwrap()).collect()).collect();
+    let instructions: Vec<Vec<isize>> = binding
+        .lines()
+        .map(|l| {
+            instructions
+                .captures_iter(l)
+                .map(|c| c.get(0).unwrap().as_str().parse().unwrap())
+                .collect()
+        })
+        .collect();
 
-    let val: isize = instructions.into_iter().map(|i| {
-        let mut arrs: Vec<Vec<isize>> = vec![i];
-        loop {
-            if arrs.last().unwrap().windows(2).all(|w| w[1] == w[0]) {break;}
-            arrs.push(arrs.last().unwrap().windows(2).map(|w| w[1] - w[0]).collect());
-        }
+    let val: isize = instructions
+        .into_iter()
+        .map(|i| {
+            let mut arrs: Vec<Vec<isize>> = vec![i];
+            loop {
+                if arrs.last().unwrap().windows(2).all(|w| w[1] == w[0]) {
+                    break;
+                }
+                arrs.push(
+                    arrs.last()
+                        .unwrap()
+                        .windows(2)
+                        .map(|w| w[1] - w[0])
+                        .collect(),
+                );
+            }
 
-        println!("{arrs:?}");
+            println!("{arrs:?}");
 
-        let val = *arrs.last().unwrap().first().unwrap();
-        arrs.last_mut().unwrap().insert(0, val);
+            let val = *arrs.last().unwrap().first().unwrap();
+            arrs.last_mut().unwrap().insert(0, val);
 
-        for i in (0..arrs.len()-1).rev() {
-            let val = arrs[i].first().unwrap() - arrs[i+1].first().unwrap();
-            arrs[i].insert(0, val);
-        }
-        println!("{arrs:?}");
-        *arrs.first().unwrap().first().unwrap()
-    }).sum();
+            for i in (0..arrs.len() - 1).rev() {
+                let val = arrs[i].first().unwrap() - arrs[i + 1].first().unwrap();
+                arrs[i].insert(0, val);
+            }
+            println!("{arrs:?}");
+            *arrs.first().unwrap().first().unwrap()
+        })
+        .sum();
 
     println!("{val}");
 
