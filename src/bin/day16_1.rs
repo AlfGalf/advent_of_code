@@ -1,7 +1,5 @@
 use std::{collections::VecDeque, error::Error, fs, usize};
 
-use itertools::Itertools;
-
 #[derive(PartialEq, Eq, Clone, Copy)]
 enum Dir {
     N,
@@ -127,7 +125,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let map: Vec<Vec<char>> = binding.lines().map(|l| l.chars().collect()).collect();
 
     let res = calc(&map, (0, 0), Dir::E);
-    
+
     println!("{res}");
 
     Ok(())

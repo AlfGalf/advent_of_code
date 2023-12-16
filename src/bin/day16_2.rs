@@ -1,7 +1,5 @@
 use std::{collections::VecDeque, error::Error, fs, usize};
 
-use itertools::Itertools;
-
 #[derive(PartialEq, Eq, Clone, Copy)]
 enum Dir {
     N,
@@ -129,11 +127,11 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut max = 0;
     for x in 0..map[0].len() {
         max = max.max(calc(&map, (x, 0), Dir::S));
-        max = max.max(calc(&map, (x, map.len()-1), Dir::N));
+        max = max.max(calc(&map, (x, map.len() - 1), Dir::N));
     }
     for y in 0..map.len() {
         max = max.max(calc(&map, (0, y), Dir::E));
-        max = max.max(calc(&map, (map[0].len()-1, y), Dir::W));
+        max = max.max(calc(&map, (map[0].len() - 1, y), Dir::W));
     }
 
     println!("{max}");
