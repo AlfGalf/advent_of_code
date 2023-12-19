@@ -11,7 +11,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let mut walls : Vec<((isize, isize), (isize, isize), char)> = Default::default();
 
-    let mut cur: (isize, isize) = (0, 0);
+    let mut cur: (isize, isize);
     let mut next: (isize, isize) = (0, 0);
     let mut min: (isize, isize) = (0, 0);
     let mut max: (isize, isize) = (0, 0);
@@ -54,8 +54,8 @@ fn main() -> Result<(), Box<dyn Error>> {
         let walls_y = walls.iter().filter(|&&w| match w {
             ((_sx, sy), (_ex, ey), 'U') => sy > y && ey < y,
             ((_sx, sy), (_ex, ey), 'D') => sy < y && ey > y,
-            ((sx, sy), (ex, ey), 'R') => y == sy,
-            ((sx, sy), (ex, ey), 'L') => y == sy,
+            ((_sx, sy), (_ex, _ey), 'R') => y == sy,
+            ((_sx, sy), (_ex, _ey), 'L') => y == sy,
             _ => false
         });
 
