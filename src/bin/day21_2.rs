@@ -1,15 +1,22 @@
-use std::{error::Error, fs, usize, collections::HashSet};
+use std::{collections::HashSet, error::Error, fs, usize};
 
 use itertools::Itertools;
 
 const DIRS: [(isize, isize); 4] = [(0, 1), (0, -1), (1, 0), (-1, 0)];
-const LEN: usize = 26501365;
+// const LEN: usize = 26501365;
 
 fn main() -> Result<(), Box<dyn Error>> {
     // let binding = fs::read_to_string("inputs/test.txt")?;
     let binding = fs::read_to_string("inputs/day21.txt")?;
 
-    let map = binding.lines().map(|l| l.chars().map(|c| if c == 'S' {'.'} else {c}).collect_vec()).collect_vec();
+    let map = binding
+        .lines()
+        .map(|l| {
+            l.chars()
+                .map(|c| if c == 'S' { '.' } else { c })
+                .collect_vec()
+        })
+        .collect_vec();
 
     let width = map[0].len();
     let height = map.len();
@@ -22,8 +29,15 @@ fn main() -> Result<(), Box<dyn Error>> {
                 .enumerate()
                 .map(move |(x, c)| (x.clone(), y.clone(), c.clone()))
         })
-        .filter_map(|(x, y, c)| if c == 'S' { Some((x as isize, y as isize)) } else { None })
-        .next().unwrap();
+        .filter_map(|(x, y, c)| {
+            if c == 'S' {
+                Some((x as isize, y as isize))
+            } else {
+                None
+            }
+        })
+        .next()
+        .unwrap();
 
     assert!(width == height);
     println!("{}", width);
@@ -37,7 +51,10 @@ fn main() -> Result<(), Box<dyn Error>> {
                 for (xd, yd) in DIRS {
                     let (px, py) = (x as isize + xd, y as isize + yd);
 
-                    if map[(py.rem_euclid(height as isize)) as usize][(px.rem_euclid(width as isize)) as usize] == '.' {
+                    if map[(py.rem_euclid(height as isize)) as usize]
+                        [(px.rem_euclid(width as isize)) as usize]
+                        == '.'
+                    {
                         new_arr.insert((px, py));
                     }
                 }
